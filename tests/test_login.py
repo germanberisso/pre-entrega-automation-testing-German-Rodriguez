@@ -5,7 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 def test_login_exitoso():
     # Inicializar ChromeDriver
-    driver = webdriver.Chrome()  # Asegurate que ChromeDriver esté en PATH o en drivers/
+    driver = webdriver.Chrome()  # inicializo navegador
     driver.maximize_window()
     
     try:
