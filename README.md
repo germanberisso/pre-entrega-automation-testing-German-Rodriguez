@@ -21,5 +21,5 @@ El trabajo demuestra el uso de **Selenium WebDriver**, **Pytest** y **esperas ex
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone https://github.com/tu-usuario/pre-entrega-automation-testing-german-rodriguez.git
+   git clone https://github.com/germanberisso/pre-entrega-automation-testing-german-rodriguez.git
    cd pre-entrega-automation-testing-german-rodriguez
