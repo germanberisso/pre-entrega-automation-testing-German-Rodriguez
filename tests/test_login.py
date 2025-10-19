@@ -1,35 +1,43 @@
+import pytest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import time
+from utils.helpers import login
 
-def test_login_exitoso():
-    # Inicializar ChromeDriver
-    driver = webdriver.Chrome()  # inicializo navegador
+@pytest.fixture
+def driver():
+    """Fixture para inicializar y cerrar el navegador."""
+    driver = webdriver.Chrome()
     driver.maximize_window()
-    
-    try:
-        # Navegar a la página de login
-        driver.get("https://www.saucedemo.com")
+    yield driver
+    driver.quit()
 
-        # Espera explícita para el campo de usuario
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "user-name"))
-        )
+def test_login_exitoso(driver):
+    """Verifica que un usuario válido pueda iniciar sesión correctamente en saucedemo.com."""
+    driver.get("https://www.saucedemo.com")
 
-        # Ingresar credenciales
-        driver.find_element(By.ID, "user-name").send_keys("standard_user")
-        driver.find_element(By.ID, "password").send_keys("secret_sauce")
-        driver.find_element(By.ID, "login-button").click()
+    # Espera explícita para campo de usuario
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "user-name"))
+    )
 
-        # Validar que se redirige a /inventory.html
-        WebDriverWait(driver, 10).until(
-            EC.url_contains("/inventory.html")
-        )
+    # Ingresar credenciales válidas
+    driver.find_element(By.ID, "user-name").send_keys("standard_user")
+    driver.find_element(By.ID, "password").send_keys("secret_sauce")
+    driver.find_element(By.ID, "login-button").click()
 
-        # Validar que el título de la página sea "Products"
-        titulo = driver.find_element(By.CLASS_NAME, "title").text
-        assert titulo == "Products", f"El título esperado era 'Products', pero se encontró '{titulo}'"
+    # Validar redirección a /inventory.html
+    WebDriverWait(driver, 10).until(EC.url_contains("/inventory.html"))
+    assert "/inventory.html" in driver.current_url, "No se redirigió correctamente a la página de inventario."
 
-    finally:
-        driver.quit()
+    # Validar que el título sea "Products"
+    titulo = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.CLASS_NAME, "title"))
+    ).text
+    assert titulo == "Products", f"El título esperado era 'Products', pero se encontró '{titulo}'"
+
+    # Evidencia opcional (screenshot)
+    timestamp = time.strftime("%Y%m%d-%H%M%S")
+    driver.save_screenshot(f"reports/login_exitoso_{timestamp}.png")
