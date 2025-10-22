@@ -1,1 +1,1 @@
-# Este archivo puede estar vacío
+# Este archivo puede estar vacío, pero indica que 'utils' es un paquete Python.
